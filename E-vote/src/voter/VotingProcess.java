@@ -12,6 +12,7 @@ import javax.net.ssl.SSLSocket;
 
 import org.apache.log4j.Logger;
 
+import ssl.RSA_Blinder;
 import ssl.SSLManager;
 
 public class VotingProcess implements VotingProcessInterface {
@@ -20,7 +21,9 @@ public class VotingProcess implements VotingProcessInterface {
 	private Socket socket;
 	private Logger vLogger;
 	private boolean voterIsEligible;
-	PublicKey pbK;
+	private PublicKey pbK;
+	byte[] blindedSignedMessage;
+	
 	
 	public VotingProcess(String ksPath, char [] ksPass)
 	{
@@ -70,6 +73,7 @@ public class VotingProcess implements VotingProcessInterface {
 			ObjectInputStream oisbm = new ObjectInputStream(socket.getInputStream());
 			byte[] response = (byte[])oisbm.readObject();
 			vLogger.info("Blinded mesage signed received succsesfully");
+			blindedSignedMessage =response;
 			
 			oosbm.flush();
 			
