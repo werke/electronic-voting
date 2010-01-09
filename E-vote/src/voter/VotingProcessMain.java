@@ -176,11 +176,11 @@ public class VotingProcessMain extends javax.swing.JFrame {
                 vp.sendBlindedMessage("sdfsdf".getBytes());
         }
 
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new VotingProcessMain().setVisible(true);
-            }
-        });
+//        java.awt.EventQueue.invokeLater(new Runnable() {
+//            public void run() {
+//                new VotingProcessMain().setVisible(true);
+//            }
+//        });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
