@@ -43,6 +43,10 @@ public class SSLManager {
         this.CACertificate = keystore.getCertificate("certification_authority");
     }
 
+    public KeyStore getKeyStore() {
+        return keystore;
+    }
+
     public SSLSocket connectSocket( String host, int port )
             throws IOException {
         SSLSocket socket = (SSLSocket)
