@@ -62,15 +62,14 @@ public class VotingProcess implements VotingProcessInterface {
 	
 	public byte[] sendBlindedMessage(byte[] message) {
 		try{
-			System.out.println("Am intrat");
-			//send the request
 			ObjectOutputStream oosbm = new ObjectOutputStream(socket.getOutputStream());
 			oosbm.writeObject(message);
-			System.out.println("Am intrat1");
+			vLogger.info("Blinded nessage sent for verification and for signing");
 			
 			//reads the response
 			ObjectInputStream oisbm = new ObjectInputStream(socket.getInputStream());
 			byte[] response = (byte[])oisbm.readObject();
+			vLogger.info("Blinded mesage signed received succsesfully");
 			
 			oosbm.flush();
 			
