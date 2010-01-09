@@ -27,27 +27,8 @@ public class ValidatorServer {
 
 		try{
 			server = new ServerSocket(PORT_NUMBER);
-			Security.addProvider(new BouncyCastleProvider());
-			KeyPairGenerator kpg2 = KeyPairGenerator.getInstance("RSA");
-			kpg2.initialize(512);
-			KeyPair pairT = kpg2.genKeyPair();
-			 
-			RSAPrivateKey privateKeyT = (RSAPrivateKey)pairT.getPrivate();
-			RSAPublicKey publicKeyT = (RSAPublicKey)pairT.getPublic();
-
 			
-			try {
-				Signature versignature = Signature.getInstance("SHA1WithRSA", "BC");
-				System.out.println(versignature.toString());
-				versignature.initVerify ( publicKeyT ) ;
-			     			
-			} catch (NoSuchAlgorithmException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (NoSuchProviderException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			     		
 			
 		}catch(IOException exception){
 			vLogger.error("Error initializing the validator : "+ exception.getMessage());
