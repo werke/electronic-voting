@@ -2,7 +2,7 @@ package voter;
 
 import org.apache.log4j.Logger;
 
-public class VoterProcessMain {
+public class VotingProcessMain {
 
 	/**
 	 * @param args
