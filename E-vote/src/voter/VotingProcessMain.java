@@ -205,14 +205,13 @@ public class VotingProcessMain extends javax.swing.JFrame {
     * @param args the command line arguments
     */
     public static void main(String args[]) {
-        Voter v = new Voter("Ionut", "Posea","1851220081660");
         MyLogger.initLogging("VotingLogger", "voting.log");
 
-//        java.awt.EventQueue.invokeLater(new Runnable() {
-//            public void run() {
-//                new VotingProcessMain().setVisible(true);
-//            }
-//        });
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new VotingProcessMain().setVisible(true);
+            }
+        });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
