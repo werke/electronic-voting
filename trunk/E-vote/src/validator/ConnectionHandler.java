@@ -27,29 +27,48 @@ public class ConnectionHandler implements Runnable{
 	public void run() {
 		
 		try{			
-			//read the request
+			//read the request for elligibility
 			ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
 			Voter voterRequest = (Voter)ois.readObject();
 			vLogger.info("Am primit cerere de vot din partea persoanei cu CNP "+voterRequest.getCNP());
 			
 			boolean ok = isEligibleToVote(voterRequest);
 			
-			//write the response and send it
+			//write the response for elligibility and send it
 			ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
 			oos.writeObject(ok);
 			vLogger.info("Response for elligibility sent " + ok);
 			
+			System.out.println("mata-1");
+			if (!ok){			
+				//close connection
+				ois.close();
+				oos.close();
+				socket.close();
+				return;
+			}
+			oos.flush();
+
+			System.out.println("mata");
+			//reads the blinded message
+			ObjectInputStream ois1 = new ObjectInputStream(socket.getInputStream());
+			byte[] blindedMesage = (byte[])ois1.readObject();
+			vLogger.info("Am primit mesajul blinded "+blindedMesage.toString());
+			
+			
+			
 			//close connection
 			ois.close();
+			ois1.close();
 			oos.close();
 			socket.close();
 			
 			
-		}catch (IOException exception){
+		}catch (Exception exception){
 			vLogger.error("Error managing a client request :" + exception.getMessage());
-		}catch (ClassNotFoundException exception) {
-			vLogger.error("Error managing a client request :" + exception.getMessage());
+			exception.printStackTrace();
 		}
+	
 		
 		
 	}
