@@ -11,8 +11,13 @@
 
 package voter;
 
+import java.security.interfaces.RSAPublicKey;
+
 import javax.swing.JOptionPane;
+import ssl.*;
 import org.apache.log4j.Logger;
+
+import ssl.RSA_Blinder;
 import utils.MyLogger;
 
 /**
@@ -184,7 +189,14 @@ public class VotingGUI extends javax.swing.JFrame {
             else{
                 String message = "Voter with CNP "+v.getCNP()+" is eligible to vote.";
                 vLogger.info(message);
-                vp.sendBlindedMessage("sdfsdf".getBytes());
+                byte[] raw  = "lalala".getBytes();
+    			try{
+    				RSA_Blinder rsaBlinder = new RSA_Blinder((RSAPublicKey)vp.getPbK());
+    				vp.sendBlindedMessage(rsaBlinder.blind(raw));
+    				
+    			}catch(Exception e){
+    				vLogger.error("Error at RSA blinding "+e.getMessage());
+    			}
             }
         } catch(Exception e) {
             JOptionPane.showMessageDialog(rootPane, "Eroare", "Eroare", JOptionPane.ERROR_MESSAGE);
