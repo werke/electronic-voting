@@ -197,7 +197,7 @@ public class VotingGUI extends javax.swing.JFrame {
     				rsaBlinder.unblind(vp.blindedSignedMessage);
     				System.out.println(rsaBlinder.unblind(vp.blindedSignedMessage));
     				System.out.println(RSA_Blinder.unsign(rsaBlinder.unblind(vp.blindedSignedMessage), (RSAPublicKey)vp.getPbK()));
-    				
+    				System.out.println(rsaBlinder.unblind(RSA_Blinder.unsign(vp.blindedSignedMessage, (RSAPublicKey)vp.getPbK())));
     			}catch(Exception e){
     				vLogger.error("Error at RSA blinding "+e.getMessage());
     			}
