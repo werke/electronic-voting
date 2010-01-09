@@ -8,6 +8,8 @@ import java.net.Socket;
 
 import org.apache.log4j.Logger;
 
+import ssl.SSLManager;
+
 public class VotingProcess implements VotingProcessInterface {
 
 	private static final int PORT_NUMBER  = 3333;
@@ -18,13 +20,15 @@ public class VotingProcess implements VotingProcessInterface {
 	public VotingProcess()
 	{
 		try{
-			InetAddress server = InetAddress.getLocalHost();
-			socket = new Socket(server, PORT_NUMBER);
+			SSLManager sslManager = new SSLManager("security/voters/Marius/Marius.ks", "Marius_password".toCharArray());
+            socket = sslManager.connectSocket("localhost", PORT_NUMBER);
 			voterIsEligible = false;
-			vLogger =  new VoterLogger().getVoterLogger();			
+			vLogger =  Logger.getLogger("VotingLogger");			
 			
 		}catch(IOException exception){
 			vLogger.error("Error intializing the client :" + exception.getMessage());
+		}catch (Exception e){
+			vLogger.error("Error intializing the client :" + e.getMessage());
 		}
 	}
 
