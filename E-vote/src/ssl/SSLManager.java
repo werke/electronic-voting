@@ -11,7 +11,9 @@ import javax.net.ssl.SSLSocket;
 
 public class SSLManager {
 
-    // variabilele pentru configurarea SSL
+    /* variables for SSL configurations
+     * 
+     */
     private KeyStore keystore;
     private KeyManagerFactory keyManagerFactory;
     private TrustManagerFactory trustManagerFactory;
@@ -47,13 +49,14 @@ public class SSLManager {
                 (sslContext.getSocketFactory().createSocket(host, port));
         socket.startHandshake();
 
-        // conectarea la document server si verificarea autenticitatii acestuia
+        /*
+         * connection to server and verification of its authenticity
+         */
         try {
             X509Certificate[] serverCertificates =
                     (X509Certificate[])(socket.getSession()).getPeerCertificates();
             if( !CACertificate.equals(serverCertificates[1]))
                 throw new Exception("bad server certificate");
-            else System.out.println("Server certificate ok");
         } catch(Exception e) {
             e.printStackTrace();
             return null;

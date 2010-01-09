@@ -16,6 +16,8 @@ import java.util.concurrent.Executors;
 import org.apache.log4j.Logger;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
+import ssl.SSLManager;
+
 
 public class ValidatorServer {
 	
@@ -26,12 +28,14 @@ public class ValidatorServer {
 	public ValidatorServer(){
 
 		try{
-			server = new ServerSocket(PORT_NUMBER);
 			
-			     		
+			SSLManager sslManager = new SSLManager("security/Validator/Validator.ks", "validator_password".toCharArray());
+            server = sslManager.initServerSocket(PORT_NUMBER);           
 			
 		}catch(IOException exception){
 			vLogger.error("Error initializing the validator : "+ exception.getMessage());
+		}catch(Exception e){
+			vLogger.error("SSL manager error : "+ e.getMessage());
 		}
 	}
 	
