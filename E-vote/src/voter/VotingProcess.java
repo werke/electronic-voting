@@ -17,10 +17,10 @@ public class VotingProcess implements VotingProcessInterface {
 	private Logger vLogger;
 	private boolean voterIsEligible;
 	
-	public VotingProcess()
+	public VotingProcess(String ksPath, char [] ksPass)
 	{
 		try{
-			SSLManager sslManager = new SSLManager("security/voters/Marius/Marius.ks", "Marius_password".toCharArray());
+			SSLManager sslManager = new SSLManager(ksPath, ksPass);
             socket = sslManager.connectSocket("localhost", PORT_NUMBER);
 			voterIsEligible = false;
 			vLogger =  Logger.getLogger("VotingLogger");			

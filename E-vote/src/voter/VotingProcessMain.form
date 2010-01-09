@@ -132,8 +132,14 @@
           </Properties>
         </Component>
         <Component class="javax.swing.JTextField" name="jTextFieldKSPath">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="security/voters/Marius/Marius.ks"/>
+          </Properties>
         </Component>
         <Component class="javax.swing.JPasswordField" name="jPasswordFieldKSPass">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Marius_password"/>
+          </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabelNume">
           <Properties>
@@ -151,10 +157,19 @@
           </Properties>
         </Component>
         <Component class="javax.swing.JTextField" name="jTextFieldNume">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Ion"/>
+          </Properties>
         </Component>
         <Component class="javax.swing.JTextField" name="jTextFieldPrenume">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Marius"/>
+          </Properties>
         </Component>
         <Component class="javax.swing.JTextField" name="jTextFieldCNP">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="1851130160046"/>
+          </Properties>
         </Component>
       </SubComponents>
     </Container>
@@ -181,6 +196,9 @@
         </Property>
         <Property name="text" type="java.lang.String" value="Voteaza !"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonVoteActionPerformed"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>
