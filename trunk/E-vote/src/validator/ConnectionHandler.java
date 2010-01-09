@@ -4,12 +4,15 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.security.interfaces.RSAPrivateKey;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
 import org.apache.log4j.Logger;
+
+import ssl.RSA_Blinder;
 import voter.Voter;
 import database.*;
 
@@ -18,9 +21,11 @@ public class ConnectionHandler implements Runnable{
 
 	private Socket socket;
 	private Logger vLogger = Logger.getLogger("ValidatorLogger");
+	private RSAPrivateKey rsapvK;
 
-	public ConnectionHandler(Socket socket ){
+	public ConnectionHandler(Socket socket , RSAPrivateKey rsapvK){
 		this.socket = socket;
+		this.rsapvK = rsapvK;
 	}
 
 	@Override
@@ -39,7 +44,6 @@ public class ConnectionHandler implements Runnable{
 			oos.writeObject(ok);
 			vLogger.info("Response for elligibility sent " + ok);
 			
-			System.out.println("mata-1");
 			if (!ok){			
 				//close connection
 				ois.close();
@@ -49,11 +53,17 @@ public class ConnectionHandler implements Runnable{
 			}
 			oos.flush();
 
-			System.out.println("mata");
 			//reads the blinded message
 			ObjectInputStream ois1 = new ObjectInputStream(socket.getInputStream());
 			byte[] blindedMesage = (byte[])ois1.readObject();
 			vLogger.info("Am primit mesajul blinded "+blindedMesage.toString());
+			
+			//we sign the message with validator private key
+			
+			ObjectOutputStream oos1 = new ObjectOutputStream(socket.getOutputStream());
+			oos1.writeObject(RSA_Blinder.sign(blindedMesage, rsapvK));
+			vLogger.info("Response with the blinded message signed was sent");
+			
 			
 			
 			
@@ -61,6 +71,7 @@ public class ConnectionHandler implements Runnable{
 			ois.close();
 			ois1.close();
 			oos.close();
+			oos1.close();
 			socket.close();
 			
 			
