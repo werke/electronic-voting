@@ -11,8 +11,8 @@ import javax.net.ssl.SSLSocket;
 
 public class SSLManager {
 
-    /* variables for SSL configurations
-     * 
+    /* 
+     * variables for SSL configurations
      */
     private KeyStore keystore;
     private KeyManagerFactory keyManagerFactory;
