@@ -5,6 +5,10 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.security.PublicKey;
+import java.security.cert.X509Certificate;
+
+import javax.net.ssl.SSLSocket;
 
 import org.apache.log4j.Logger;
 
@@ -16,6 +20,7 @@ public class VotingProcess implements VotingProcessInterface {
 	private Socket socket;
 	private Logger vLogger;
 	private boolean voterIsEligible;
+	PublicKey pbK;
 	
 	public VotingProcess(String ksPath, char [] ksPass)
 	{
@@ -24,6 +29,8 @@ public class VotingProcess implements VotingProcessInterface {
             socket = sslManager.connectSocket("localhost", PORT_NUMBER);
 			voterIsEligible = false;
 			vLogger =  Logger.getLogger("VotingLogger");			
+			X509Certificate[] serverCertificates =(X509Certificate[])(((SSLSocket)socket).getSession()).getPeerCertificates();
+			pbK = serverCertificates[0].getPublicKey();
 			
 		}catch(IOException exception){
 			vLogger.error("Error intializing the client :" + exception.getMessage());
@@ -43,12 +50,8 @@ public class VotingProcess implements VotingProcessInterface {
 			ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
 			Boolean response = (Boolean)ois.readObject();
 			
-			//closing connection
-			ois.close();
-			oos.close();
-			socket.close();
-			
 			voterIsEligible = response.booleanValue();
+			oos.flush();
 			
 		}catch(IOException exception){
 			vLogger.error("Error sending the request for determining elligibility :" +exception.getMessage());
@@ -59,17 +62,19 @@ public class VotingProcess implements VotingProcessInterface {
 	
 	public byte[] sendBlindedMessage(byte[] message) {
 		try{
+			System.out.println("Am intrat");
 			//send the request
-			ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
-			oos.writeObject(message);
+			ObjectOutputStream oosbm = new ObjectOutputStream(socket.getOutputStream());
+			oosbm.writeObject(message);
+			System.out.println("Am intrat1");
 			
 			//reads the response
-			ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
-			byte[] response = (byte[])ois.readObject();
+			ObjectInputStream oisbm = new ObjectInputStream(socket.getInputStream());
+			byte[] response = (byte[])oisbm.readObject();
+			
+			oosbm.flush();
 			
 			//closing connection
-			ois.close();
-			oos.close();
 			socket.close();
 			
 			return response;
@@ -84,6 +89,10 @@ public class VotingProcess implements VotingProcessInterface {
 
 	public boolean voterIsEligible() {
 		return voterIsEligible;
+	}
+
+	public PublicKey getPbK() {
+		return pbK;
 	}
 
 	
