@@ -9,10 +9,7 @@ import javax.net.ssl.*;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocket;
 
-public class Client {
-
-    private String name;
-
+public class SSLManager {
 
     // variabilele pentru configurarea SSL
     private KeyStore keystore;
@@ -20,16 +17,11 @@ public class Client {
     private TrustManagerFactory trustManagerFactory;
     private SSLContext sslContext;
     private Certificate CACertificate;
-    // socketul pentru comunicarea cu serverul
-    private SSLSocket docSocket;
 
-    public Client( String clientName, String docServerHost, int docServerPort )
-            throws Exception {
-        this.name = clientName;
-        String keystorePath = "users/"+name+"/security/"+name+".ks";
-        char[] keystorePass = new String(name+"_password").toCharArray();
+    public SSLManager( String keystorePath, char [] keystorePass )
+            throws Exception
+    {
         initSSL( keystorePath, keystorePass );
-        this.docSocket = connectSocket( docServerHost, docServerPort );
     }
 
     private void initSSL( String keystorePath, char[] keystorePass )
@@ -49,7 +41,7 @@ public class Client {
         this.CACertificate = keystore.getCertificate("certification_authority");
     }
 
-    private SSLSocket connectSocket( String host, int port )
+    public SSLSocket connectSocket( String host, int port )
             throws IOException {
         SSLSocket socket = (SSLSocket)
                 (sslContext.getSocketFactory().createSocket(host, port));
@@ -58,13 +50,22 @@ public class Client {
         // conectarea la document server si verificarea autenticitatii acestuia
         try {
             X509Certificate[] serverCertificates =
-                    (X509Certificate[])((this.docSocket).getSession()).getPeerCertificates();
+                    (X509Certificate[])(socket.getSession()).getPeerCertificates();
             if( !CACertificate.equals(serverCertificates[1]))
                 throw new Exception("bad server certificate");
+            else System.out.println("Server certificate ok");
         } catch(Exception e) {
             e.printStackTrace();
             return null;
         }
         return socket;
+    }
+
+    public SSLServerSocket initServerSocket( int port )
+            throws IOException{
+        SSLServerSocket sSocket =
+                (SSLServerSocket) sslContext.getServerSocketFactory().createServerSocket(port);
+        sSocket.setNeedClientAuth(true);
+        return sSocket;
     }
 }
