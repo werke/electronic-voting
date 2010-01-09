@@ -16,10 +16,14 @@ public class VotingProcessMain {
 		MyLogger.initLogging("VotingLogger", "voting.log");
 		Logger vLogger = Logger.getLogger("VotingLogger");
 		vp.sendRequestToVote(v);
-		if (!vp.voterIsEligible())
-			vLogger.fatal("Voter with CNP "+v.getCNP()+" is not eligible to vote. Possible fraud detected.");
-		else
+		if (!vp.voterIsEligible()){
+			vLogger.fatal("Voter with CNP "+v.getCNP()+" is NOT eligible to vote. Possible fraud detected.");
+		}
+		else{
+			vLogger.info("Voter with CNP "+v.getCNP()+" is eligible to vote.");
 			vp.sendBlindedMessage("sdfsdf".getBytes());
+		}
+			
 			
 
 	}
