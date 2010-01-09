@@ -13,14 +13,14 @@ public class VotingProcess implements VotingProcessInterface {
 	private static final int PORT_NUMBER  = 3333;
 	private Socket socket;
 	private Logger vLogger;
-	private boolean isEligible;
+	private boolean voterIsEligible;
 	
 	public VotingProcess()
 	{
 		try{
 			InetAddress server = InetAddress.getLocalHost();
 			socket = new Socket(server, PORT_NUMBER);
-			isEligible = false;
+			voterIsEligible = false;
 			vLogger =  new VoterLogger().getVoterLogger();			
 			
 		}catch(IOException exception){
@@ -44,7 +44,7 @@ public class VotingProcess implements VotingProcessInterface {
 			oos.close();
 			socket.close();
 			
-			isEligible = response.booleanValue();
+			voterIsEligible = response.booleanValue();
 			
 		}catch(IOException exception){
 			vLogger.error("Error sending the request for determining elligibility :" +exception.getMessage());
@@ -78,8 +78,8 @@ public class VotingProcess implements VotingProcessInterface {
 		return null;
 	}
 
-	public boolean isEligible() {
-		return isEligible;
+	public boolean voterIsEligible() {
+		return voterIsEligible;
 	}
 
 	
