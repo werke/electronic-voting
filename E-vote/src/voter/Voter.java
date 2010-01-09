@@ -3,6 +3,7 @@ package voter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.net.InetAddress;
 import java.net.Socket;
 
@@ -10,7 +11,7 @@ import org.apache.log4j.Logger;
 
 
 
-public class Voter{
+public class Voter implements Serializable{
 
 	private String firstName;
 	private String lastName;

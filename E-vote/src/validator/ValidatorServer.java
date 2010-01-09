@@ -17,13 +17,14 @@ import org.apache.log4j.Logger;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import ssl.SSLManager;
+import utils.MyLogger;
 
 
 public class ValidatorServer {
 	
 	private final static int PORT_NUMBER = 3333;
 	private ServerSocket server;
-	private Logger vLogger = new ValidatorLogger().getValidatorLogger();
+	private Logger vLogger = Logger.getLogger("ValidatorLogger");
 	
 	public ValidatorServer(){
 

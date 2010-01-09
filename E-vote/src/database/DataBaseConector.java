@@ -16,7 +16,7 @@ public class DataBaseConector implements DataBaseConectorInterface {
 	public DataBaseConector()
 	{
 		try {
-            Logger dataBaseCoonectorLogger = Logger.getLogger("DBLogger");
+            dataBaseCoonectorLogger = Logger.getLogger("DBLogger");
             File f = new File("logs", "db.log");
             FileAppender fapp = new FileAppender(new TTCCLayout("DATE"), f.getAbsolutePath());
             dataBaseCoonectorLogger.addAppender(fapp);
