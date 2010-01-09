@@ -11,6 +11,7 @@
 
 package voter;
 
+import javax.swing.JOptionPane;
 import org.apache.log4j.Logger;
 import utils.MyLogger;
 
@@ -19,6 +20,7 @@ import utils.MyLogger;
  * @author Marius Ion
  */
 public class VotingProcessMain extends javax.swing.JFrame {
+    Logger vLogger = Logger.getLogger("VotingLogger");
 
     /** Creates new form VotingProcessMain */
     public VotingProcessMain() {
@@ -57,11 +59,21 @@ public class VotingProcessMain extends javax.swing.JFrame {
 
         jLabelKSPass.setText("KeyStore Password");
 
+        jTextFieldKSPath.setText("security/voters/Marius/Marius.ks");
+
+        jPasswordFieldKSPass.setText("Marius_password");
+
         jLabelNume.setText("Nume");
 
         jLabelPrenume.setText("Prenume");
 
         jLabelCNP.setText("CNP");
+
+        jTextFieldNume.setText("Ion");
+
+        jTextFieldPrenume.setText("Marius");
+
+        jTextFieldCNP.setText("1851130160046");
 
         javax.swing.GroupLayout jPanelAuthenticationLayout = new javax.swing.GroupLayout(jPanelAuthentication);
         jPanelAuthentication.setLayout(jPanelAuthenticationLayout);
@@ -119,6 +131,11 @@ public class VotingProcessMain extends javax.swing.JFrame {
 
         jButtonVote.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
         jButtonVote.setText("Voteaza !");
+        jButtonVote.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonVoteActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -149,6 +166,31 @@ public class VotingProcessMain extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void jButtonVoteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonVoteActionPerformed
+        try {
+            String ksPath = jTextFieldKSPath.getText();
+            char [] ksPass = jPasswordFieldKSPass.getPassword();
+            VotingProcess vp = new VotingProcess(ksPath, ksPass);
+            String firstName = jTextFieldPrenume.getText();
+            String lastName = jTextFieldNume.getText();
+            String cnp = jTextFieldCNP.getText();
+            Voter v = new Voter(firstName, lastName, cnp);
+            vp.sendRequestToVote(v);
+            if (!vp.voterIsEligible()){
+                String message = "Voter with CNP "+v.getCNP()+" is NOT eligible to vote. Possible fraud detected.";
+                vLogger.fatal(message);
+                throw new Exception(message);
+            }
+            else{
+                String message = "Voter with CNP "+v.getCNP()+" is eligible to vote.";
+                vLogger.info(message);
+                vp.sendBlindedMessage("sdfsdf".getBytes());
+            }
+        } catch(Exception e) {
+            JOptionPane.showMessageDialog(rootPane, "Eroare", "Eroare", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_jButtonVoteActionPerformed
+
     private String [] getCandidates() {
         return new String[] {
           "Candidatul 1, Partidul 1",
@@ -164,17 +206,7 @@ public class VotingProcessMain extends javax.swing.JFrame {
     */
     public static void main(String args[]) {
         Voter v = new Voter("Ionut", "Posea","1851220081660");
-        VotingProcess vp = new VotingProcess();
         MyLogger.initLogging("VotingLogger", "voting.log");
-        Logger vLogger = Logger.getLogger("VotingLogger");
-        vp.sendRequestToVote(v);
-        if (!vp.voterIsEligible()){
-                vLogger.fatal("Voter with CNP "+v.getCNP()+" is NOT eligible to vote. Possible fraud detected.");
-        }
-        else{
-                vLogger.info("Voter with CNP "+v.getCNP()+" is eligible to vote.");
-                vp.sendBlindedMessage("sdfsdf".getBytes());
-        }
 
 //        java.awt.EventQueue.invokeLater(new Runnable() {
 //            public void run() {
