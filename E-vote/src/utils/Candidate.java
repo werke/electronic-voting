@@ -31,6 +31,9 @@ public class Candidate {
 		this.organizationName = organizationName;
 	}
 	
-	
+	public String toString()
+	{
+		return "Candidate "+ candidateName + " from organization "+ organizationName;
+	}
 
 }
