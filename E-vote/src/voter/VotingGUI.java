@@ -23,17 +23,18 @@ import database.DataBaseConector;
 import java.util.List;
 import ssl.RSA_Blinder;
 import utils.*;
-import utils.*;
 
 /**
  *
  * @author Marius Ion
  */
 public class VotingGUI extends javax.swing.JFrame {
-    Logger vLogger = Logger.getLogger("VotingLogger");
+    private final Logger vLogger = Logger.getLogger("VotingLogger");
+    private final List<Candidate> candidates = new ArrayList<Candidate>();
 
     /** Creates new form VotingProcessMain */
     public VotingGUI() {
+        readCandidatesFromDB();
         initComponents();
     }
 
@@ -240,35 +241,41 @@ public class VotingGUI extends javax.swing.JFrame {
 
     private Ballot getBallot()
             throws Exception
-    {return null;
+    {
+//        int i = jListCandidates.getSelectedIndex();
+//        Candidate c =
+                return null;
+    }
+
+    private void readCandidatesFromDB() {
 
     }
 
     private List<String> getCandidates() {
         
     	DataBaseConector dbc = new DataBaseConector();
-		Connection conn =  dbc.getDatabaseConection("jdbc:mysql://localhost:3306/mysql", "root", "");
-		Statement stmt;
-		ResultSet rs;
-		ArrayList<String> result = new ArrayList<String>();
-		try {
-			stmt = conn.createStatement();
-			rs = stmt.executeQuery("SELECT VOTE_OPTION_ID , CANDIDATE , ORGANIZATION FROM evote.voting_options");
-			if (!rs.first()){
-				return null;
-			}
-			ArrayList<Candidate> candidates = new ArrayList<Candidate>();
-			while (rs.next()) { 				
-				candidates.add(new Candidate(rs.getInt(1), rs.getString(2), rs.getString(3)));				
-			}
-			for(Candidate e : candidates)
-				result.add(e.toString());
-						
-			
-		} catch (SQLException e) {
-			vLogger.error("Error getting the connection to the database "+e.getMessage());
-			return null;
-		}
+        Connection conn =  dbc.getDatabaseConection("jdbc:mysql://localhost:3306/mysql", "root", "");
+        Statement stmt;
+        ResultSet rs;
+        ArrayList<String> result = new ArrayList<String>();
+        try {
+            stmt = conn.createStatement();
+            rs = stmt.executeQuery("SELECT VOTE_OPTION_ID , CANDIDATE , ORGANIZATION FROM evote.voting_options");
+            if (!rs.first()){
+                return null;
+            }
+            ArrayList<Candidate> candidates = new ArrayList<Candidate>();
+            while (rs.next()) {
+                candidates.add(new Candidate(rs.getInt(1), rs.getString(2), rs.getString(3)));
+            }
+            for(Candidate e : candidates)
+                result.add(e.toString());
+
+
+        } catch (SQLException e) {
+            vLogger.error("Error getting the connection to the database "+e.getMessage());
+            return null;
+        }
     	   	
     	return result;
     }
