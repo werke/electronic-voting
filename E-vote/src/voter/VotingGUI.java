@@ -212,8 +212,7 @@ public class VotingGUI extends javax.swing.JFrame {
                 vLogger.error("Error receiving the blinded signed message");
                 return;
             }
-            		
-//           
+     
         }catch(Exception e){
             vLogger.error("Error at RSA blinding "+e.getMessage());
         }

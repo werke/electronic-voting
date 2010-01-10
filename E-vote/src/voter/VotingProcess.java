@@ -22,19 +22,19 @@ public class VotingProcess implements VotingProcessInterface {
 	private static final int VALIDATOR_PORT_NUMBER  = 3333;
 	private static final int TALLIER_PORT_NUMBER  = 5555;
 	private Socket validator_socket;
-	private Socket tallier_socket;
 	private Logger vLogger;
 	private boolean voterIsEligible;
 	private PublicKey pbK;
 	private byte[] blindedSignedMessage;
+	private SSLManager sslManager;
 	
 	
 	public VotingProcess(String ksPath, char [] ksPass)
 	{
 		try{
-			SSLManager sslManager = new SSLManager(ksPath, ksPass);
+			sslManager = new SSLManager(ksPath, ksPass);
 			validator_socket = sslManager.connectSocket("localhost", VALIDATOR_PORT_NUMBER);
-			tallier_socket = sslManager.connectSocket("localhost", TALLIER_PORT_NUMBER);
+			//tallier_socket = sslManager.connectSocket("localhost", TALLIER_PORT_NUMBER);
 			voterIsEligible = false;
 			vLogger =  Logger.getLogger("VotingLogger");			
 			X509Certificate[] serverCertificates =(X509Certificate[])(((SSLSocket)validator_socket).getSession()).getPeerCertificates();
@@ -99,6 +99,7 @@ public class VotingProcess implements VotingProcessInterface {
 	public void sendSignedMessageForTallier (byte[] message)
 	{
 		try{
+			Socket tallier_socket = sslManager.connectSocket("localhost", TALLIER_PORT_NUMBER);
 			ObjectOutputStream oosbm = new ObjectOutputStream(tallier_socket.getOutputStream());
 			oosbm.writeObject(message);
 			vLogger.info("Signed message sent to tallier for validation and registration");
