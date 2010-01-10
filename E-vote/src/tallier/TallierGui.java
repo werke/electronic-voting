@@ -48,17 +48,18 @@ public class TallierGui extends javax.swing.JFrame {
         });
 
         jButtonStop.setText("Stop");
+        jButtonStop.setEnabled(false);
         jButtonStop.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtonStopActionPerformed(evt);
             }
         });
 
-        jLabelTitle.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jLabelTitle.setFont(new java.awt.Font("Tahoma", 0, 18));
         jLabelTitle.setText("Electronic Voting System");
 
         jListResults.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            String[] strings = {  };
             public int getSize() { return strings.length; }
             public Object getElementAt(int i) { return strings[i]; }
         });
