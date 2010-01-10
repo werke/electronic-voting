@@ -198,19 +198,29 @@ public class VotingGUI extends javax.swing.JFrame {
         String message = "Voter with CNP "+v.getCNP()+" is eligible to vote.";
         vLogger.info(message);
         RSA_Blinder rsaBlinder = new RSA_Blinder((RSAPublicKey)vp.getPbK());
-        byte[] raw  = ballot.getBytes();
-        byte[] blinded = rsaBlinder.blind(raw);
-        byte[] unblinded = rsaBlinder.unblind(blinded);
-        Ballot bb = Ballot.fromByteArray(unblinded);
-        System.out.println(bb);
+        byte[] raw  = "dfsdf".getBytes();
+        //byte[] blinded = rsaBlinder.blind(raw);
+       // byte[] unblinded = rsaBlinder.unblind(blinded);
+       // Ballot bb = Ballot.fromByteArray(unblinded);
+       // System.out.println(bb);
         
         try{
             rsaBlinder = new RSA_Blinder((RSAPublicKey)vp.getPbK());
             vp.sendBlindedMessage(rsaBlinder.blind(raw));
 
-            rsaBlinder.unblind(vp.blindedSignedMessage);
-            System.out.println(rsaBlinder.unblind(vp.blindedSignedMessage));
-            System.out.println(RSA_Blinder.unsign(rsaBlinder.unblind(vp.blindedSignedMessage), (RSAPublicKey)vp.getPbK()));
+            if (vp.getBlindedSignedMessage() != null){
+            	
+            	
+            }
+        	else{
+        		vLogger.error("Error receiving the blinded signe message");
+        		return;
+        	}
+            		
+            
+            rsaBlinder.unblind(vp.getBlindedSignedMessage());
+            System.out.println(rsaBlinder.unblind(vp.getBlindedSignedMessage()));
+            System.out.println(new String(RSA_Blinder.unsign(rsaBlinder.unblind(vp.getBlindedSignedMessage()), (RSAPublicKey)vp.getPbK())));
         }catch(Exception e){
             vLogger.error("Error at RSA blinding "+e.getMessage());
         }
