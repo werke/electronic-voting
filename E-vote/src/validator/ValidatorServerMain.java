@@ -7,6 +7,6 @@ public class ValidatorServerMain {
 		
 		MyLogger.initLogging("ValidatorLogger", "validator.log");
 		ValidatorServer vs = new ValidatorServer();
-		vs.handleIncomingConnections();
+                new Thread(vs).start();
 	}
 }
