@@ -201,6 +201,7 @@ public class VotingGUI extends javax.swing.JFrame {
     				vLogger.error("Error at RSA blinding "+e.getMessage());
     			}
             }
+            this.dispose();
         } catch(Exception e) {
             JOptionPane.showMessageDialog(rootPane, "Eroare", "Eroare", JOptionPane.ERROR_MESSAGE);
         }
