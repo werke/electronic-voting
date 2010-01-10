@@ -39,10 +39,10 @@ public class ConnectionHandler implements Runnable {
 			System.out.println(bVote.toString());
 			
 			
-			//write the response for elligibility and send it
+			//write the response for vote confirmation
 			ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
 			oos.writeObject(true);
-			vLogger.info("Response for elligibility sent " + true);
+			vLogger.info("Vote confirmed to the voter" + true);
 	
 			oos.flush();
 			
