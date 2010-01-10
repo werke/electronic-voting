@@ -4,6 +4,7 @@ import java.sql.ResultSet;
 import java.util.LinkedList;
 import java.util.List;
 import javax.swing.AbstractListModel;
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import utils.MyLogger;
 import validator.ValidatorServer;
@@ -103,6 +104,7 @@ public class TallierGui extends javax.swing.JFrame {
             public void run() {
                 jButtonStart.setEnabled(false);
                 jButtonStop.setEnabled(true);
+                JOptionPane.showMessageDialog(rootPane, "Voting is now open", "Message", JOptionPane.INFORMATION_MESSAGE);
             }
         });
     }//GEN-LAST:event_jButtonStartActionPerformed
@@ -112,11 +114,9 @@ public class TallierGui extends javax.swing.JFrame {
         tallier.stop();
         validator.stop();
         jListResults.setModel(new AbstractListModel() {
-
             public int getSize() {
                 return results.size();
             }
-
             public Object getElementAt(int index) {
                 return results.get(index);
             }
@@ -124,6 +124,7 @@ public class TallierGui extends javax.swing.JFrame {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 jButtonStop.setEnabled(false);
+                JOptionPane.showMessageDialog(rootPane, "Voting is now closed", "Message", JOptionPane.INFORMATION_MESSAGE);
             }
         });
     }//GEN-LAST:event_jButtonStopActionPerformed
