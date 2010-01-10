@@ -18,13 +18,13 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import javax.swing.JOptionPane;
-import ssl.*;
 import org.apache.log4j.Logger;
 
 import database.DataBaseConector;
 
+import java.util.List;
 import ssl.RSA_Blinder;
-import utils.MyLogger;
+import utils.*;
 
 /**
  *
@@ -134,13 +134,13 @@ public class VotingGUI extends javax.swing.JFrame {
         );
 
         jListCandidates.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = getCandidates();
-            public int getSize() { return strings.length; }
-            public Object getElementAt(int i) { return strings[i]; }
+            List<String> strings = getCandidates();
+            public int getSize() { return strings.size(); }
+            public Object getElementAt(int i) { return strings.get(i); }
         });
         jScrollPaneList.setViewportView(jListCandidates);
 
-        jButtonVote.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
+        jButtonVote.setFont(new java.awt.Font("Tahoma", 0, 36));
         jButtonVote.setText("Voteaza !");
         jButtonVote.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -179,41 +179,73 @@ public class VotingGUI extends javax.swing.JFrame {
 
     private void jButtonVoteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonVoteActionPerformed
         try {
-            String ksPath = jTextFieldKSPath.getText();
-            char [] ksPass = jPasswordFieldKSPass.getPassword();
-            VotingProcess vp = new VotingProcess(ksPath, ksPass);
-            String firstName = jTextFieldPrenume.getText();
-            String lastName = jTextFieldNume.getText();
-            String cnp = jTextFieldCNP.getText();
-            Voter v = new Voter(firstName, lastName, cnp);
-            vp.sendRequestToVote(v);
-            if (!vp.voterIsEligible()){
-                String message = "Voter with CNP "+v.getCNP()+" is NOT eligible to vote. Possible fraud detected.";
-                vLogger.fatal(message);
-                throw new Exception(message);
-            }
-            else{
-                String message = "Voter with CNP "+v.getCNP()+" is eligible to vote.";
-                vLogger.info(message);
-                byte[] raw  = "lalala".getBytes();
-    			try{
-    				RSA_Blinder rsaBlinder = new RSA_Blinder((RSAPublicKey)vp.getPbK());
-    				vp.sendBlindedMessage(rsaBlinder.blind(raw));
-    				
-    				rsaBlinder.unblind(vp.blindedSignedMessage);
-    				System.out.println(rsaBlinder.unblind(vp.blindedSignedMessage));
-    				System.out.println(new String(RSA_Blinder.unsign(rsaBlinder.unblind(vp.blindedSignedMessage), (RSAPublicKey)vp.getPbK())));
-    			}catch(Exception e){
-    				vLogger.error("Error at RSA blinding "+e.getMessage());
-    			}
-            }
+            doVote();
+            this.setVisible(false);
             this.dispose();
         } catch(Exception e) {
-            JOptionPane.showMessageDialog(rootPane, "Eroare", "Eroare", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(rootPane, e.getMessage(), "Eroare", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_jButtonVoteActionPerformed
 
-    private String [] getCandidates() {
+    private void doVote()
+            throws Exception
+    {
+        Voter v = getVoter();
+        VotingProcess vp = getVotingProcess();
+        Ballot b = getBallot();
+        vp.sendRequestToVote(v);
+        if (!vp.voterIsEligible()){
+            String message = "Voter with CNP "+v.getCNP()+" is NOT eligible to vote. Possible fraud detected.";
+            vLogger.fatal(message);
+            throw new Exception(message);
+        }
+        else{
+            String message = "Voter with CNP "+v.getCNP()+" is eligible to vote.";
+            vLogger.info(message);
+            byte[] raw  = "lalala".getBytes();
+                    try{
+                            RSA_Blinder rsaBlinder = new RSA_Blinder((RSAPublicKey)vp.getPbK());
+                            vp.sendBlindedMessage(rsaBlinder.blind(raw));
+
+                            rsaBlinder.unblind(vp.blindedSignedMessage);
+                            System.out.println(rsaBlinder.unblind(vp.blindedSignedMessage));
+                            System.out.println(new String(RSA_Blinder.unsign(rsaBlinder.unblind(vp.blindedSignedMessage), (RSAPublicKey)vp.getPbK())));
+                    }catch(Exception e){
+                            vLogger.error("Error at RSA blinding "+e.getMessage());
+                    }
+        }
+    }
+
+    private VotingProcess getVotingProcess()
+            throws Exception
+    {
+        String ksPath = jTextFieldKSPath.getText();
+        char [] ksPass = jPasswordFieldKSPass.getPassword();
+        return new VotingProcess(ksPath, ksPass);
+    }
+
+    private Voter getVoter()
+            throws Exception
+    {
+        String firstName = jTextFieldPrenume.getText();
+        String lastName = jTextFieldNume.getText();
+        String cnp = jTextFieldCNP.getText();
+        if( firstName.equals("") )
+            throw new Exception("Invalid first name");
+        if( lastName.equals("") )
+             throw new Exception("Invalid last name");
+        if( cnp.length() != 13 )
+            throw new Exception("Invalid CNP");
+        return new Voter(firstName, lastName, cnp);
+    }
+
+    private Ballot getBallot()
+            throws Exception
+    {
+
+    }
+
+    private List<String> getCandidates() {
         
     	DataBaseConector dbc = new DataBaseConector();
 		Connection conn =  dbc.getDatabaseConection("jdbc:mysql://localhost:3306/mysql", "root", "");
