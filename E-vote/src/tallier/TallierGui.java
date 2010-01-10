@@ -14,6 +14,8 @@ public class TallierGui extends javax.swing.JFrame {
 
     /** Creates new form TallierGui */
     public TallierGui() {
+        MyLogger.initLogging("TallierLogger", "tallier.log");
+        MyLogger.initLogging("ValidatorLogger", "validator.log");
         tallier = new TallierServer();
         validator = new ValidatorServer();
         initComponents();
@@ -92,7 +94,6 @@ public class TallierGui extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButtonStartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonStartActionPerformed
-        MyLogger.initLogging("TallierLogger", "tallier.log");
         new Thread( tallier ).start();
         new Thread( validator ).start();
     }//GEN-LAST:event_jButtonStartActionPerformed
