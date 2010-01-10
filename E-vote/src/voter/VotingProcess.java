@@ -18,7 +18,7 @@ import ssl.RSA_Blinder;
 import ssl.SSLManager;
 import utils.Voter;
 
-public class VotingProcess implements VotingProcessInterface {
+public class VotingProcess {
 
 	private static final int VALIDATOR_PORT_NUMBER  = 3333;
 	private static final int TALLIER_PORT_NUMBER  = 5555;
