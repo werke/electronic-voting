@@ -34,7 +34,7 @@ public class TallierServer implements Runnable {
     public void run(){
         vLogger.info("Tallier Server started . Waiting for incoming connections...");
         ExecutorService pool = Executors.newFixedThreadPool(32);
-        running = true;
+        this.running = true;
         vLogger.info("TallierServer started.");
         while (running){
             try{
