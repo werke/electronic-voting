@@ -58,4 +58,9 @@ public class Ballot implements Serializable {
         }
         return ret;
     }
+
+    @Override
+    public String toString() {
+        return new String( vote_option_id + " " + candidate + " " + organization );
+    }
 }
