@@ -1,11 +1,17 @@
 package tallier;
 
+import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.text.DecimalFormat;
 import java.util.LinkedList;
 import java.util.List;
 import javax.swing.AbstractListModel;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+
+import database.DataBaseConector;
 import utils.MyLogger;
 import validator.ValidatorServer;
 
@@ -130,10 +136,25 @@ public class TallierGui extends javax.swing.JFrame {
     }//GEN-LAST:event_jButtonStopActionPerformed
 
     private List<String> getResults() {
-        // TODO
-        List<String> results = new LinkedList<String>();
-        results.add("Marius 50%");
-        results.add("Ionutz 50%");
+
+    	List<String> results = new LinkedList<String>();
+        DataBaseConector dbc = new DataBaseConector();
+		Connection conn =  dbc.getDatabaseConection("jdbc:mysql://localhost:3306/mysql", "root", "");
+		Statement stmt;
+		ResultSet rs;
+		
+		try {
+			stmt = conn.createStatement();
+			rs =  stmt.executeQuery("SELECT COUNT(a.VOTE_REGISTERED) as Voturi , b.CANDIDATE, b.ORGANIZATION , (SELECT COUNT(*) FROM `evote`.`registered_votes`) as Total FROM `evote`.`registered_votes` a ,`evote`.`voting_options` b WHERE a.VOTE_REGISTERED = b.VOTE_OPTION_ID GROUP BY b.CANDIDATE ORDER BY Voturi DESC;");
+			
+			while(rs.next()){
+				results.add("Candidatul "+ rs.getString("CANDIDATE")+" din partea "+ rs.getString("ORGANIZATION")+" a obtinut " +rs.getInt("Voturi")+" voturi , "+new DecimalFormat("00.00").format((rs.getInt("Voturi")*100.00)/rs.getInt("Total"))+"%");
+			}
+			
+		} catch (SQLException e) {
+			System.err.println("Error getting the connection to the database "+e.getMessage());
+		}
+        
         return results;
     }
 
