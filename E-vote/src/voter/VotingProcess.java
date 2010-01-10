@@ -5,8 +5,10 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.cert.X509Certificate;
+import java.security.interfaces.RSAPrivateKey;
 
 import javax.net.ssl.SSLSocket;
 
@@ -34,6 +36,8 @@ public class VotingProcess implements VotingProcessInterface {
 			vLogger =  Logger.getLogger("VotingLogger");			
 			X509Certificate[] serverCertificates =(X509Certificate[])(((SSLSocket)socket).getSession()).getPeerCertificates();
 			pbK = serverCertificates[0].getPublicKey();
+			
+			
 			
 		}catch(IOException exception){
 			vLogger.error("Error intializing the client :" + exception.getMessage());
