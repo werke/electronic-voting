@@ -1,14 +1,21 @@
 package tallier;
 
+import java.sql.ResultSet;
+import java.util.LinkedList;
+import java.util.List;
+import javax.swing.AbstractListModel;
 import utils.MyLogger;
+import validator.ValidatorServer;
 
 public class TallierGui extends javax.swing.JFrame {
 
     private final TallierServer tallier;
+    private final ValidatorServer validator;
 
     /** Creates new form TallierGui */
     public TallierGui() {
         tallier = new TallierServer();
+        validator = new ValidatorServer();
         initComponents();
     }
 
@@ -87,11 +94,32 @@ public class TallierGui extends javax.swing.JFrame {
     private void jButtonStartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonStartActionPerformed
         MyLogger.initLogging("TallierLogger", "tallier.log");
         new Thread( tallier ).start();
+        new Thread( validator ).start();
     }//GEN-LAST:event_jButtonStartActionPerformed
 
     private void jButtonStopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonStopActionPerformed
+        final List<String> results = getResults();
         tallier.stop();
+        validator.stop();
+        jListResults.setModel(new AbstractListModel() {
+
+            public int getSize() {
+                return results.size();
+            }
+
+            public Object getElementAt(int index) {
+                return results.get(index);
+            }
+        });
     }//GEN-LAST:event_jButtonStopActionPerformed
+
+    private List<String> getResults() {
+        // TODO
+        List<String> results = new LinkedList<String>();
+        results.add("Marius 50%");
+        results.add("Ionutz 50%");
+        return results;
+    }
 
     /**
     * @param args the command line arguments
