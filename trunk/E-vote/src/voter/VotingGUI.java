@@ -245,7 +245,7 @@ public class VotingGUI extends javax.swing.JFrame {
             throws Exception
     {
         int i = jListCandidates.getSelectedIndex();
-        return new Ballot(i);
+        return new Ballot(i+1);
     }
 
     private void readCandidatesFromDB() {
