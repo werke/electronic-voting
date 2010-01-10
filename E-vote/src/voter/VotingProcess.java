@@ -101,7 +101,7 @@ public class VotingProcess implements VotingProcessInterface {
 		try{
 			ObjectOutputStream oosbm = new ObjectOutputStream(tallier_socket.getOutputStream());
 			oosbm.writeObject(message);
-			vLogger.info("Signed nessage sent to tallier for validation and registration");
+			vLogger.info("Signed message sent to tallier for validation and registration");
 			
 			//reads the response
 			ObjectInputStream oisbm = new ObjectInputStream(tallier_socket.getInputStream());
