@@ -5,11 +5,18 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 import org.apache.log4j.Logger;
 
+import database.DataBaseConector;
+
 import ssl.RSA_Blinder;
 import utils.Ballot;
+import utils.Candidate;
 import voter.Voter;
 
 public class ConnectionHandler implements Runnable {
@@ -38,6 +45,9 @@ public class ConnectionHandler implements Runnable {
 			Ballot bVote = Ballot.fromByteArray(unsignedMessage);
 			System.out.println(bVote.toString());
 			
+			System.out.println(getCandidate(Integer.parseInt(bVote.toString())));
+			
+			
 			
 			//write the response for vote confirmation
 			ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
@@ -53,11 +63,33 @@ public class ConnectionHandler implements Runnable {
 			socket.close();
 			
 		}catch (Exception exception){
-			vLogger.error("Error managing a client request :" + exception.getMessage());
+			vLogger.error("Error in managing the vote  , possible fraud detection :" + exception.getMessage());
 			exception.printStackTrace();
 		}
 		
 		
 	}
-
+	
+	private Candidate getCandidate(int ID){
+		
+		DataBaseConector dbc = new DataBaseConector();
+        Connection conn =  dbc.getDatabaseConection("jdbc:mysql://localhost:3306/mysql", "root", "");
+        Statement stmt;
+        ResultSet rs;
+        
+        try {
+            stmt = conn.createStatement();
+            rs = stmt.executeQuery("SELECT VOTE_OPTION_ID , CANDIDATE , ORGANIZATION FROM evote.voting_options WHERE VOTE_OPTION_ID = "+ID);
+            
+            if (rs.first())
+            	return new Candidate(rs.getInt("VOTE_OPTION_ID"), rs.getString("CANDIDATE"), rs.getString("ORGANIZATION"));
+            else
+            	return null;
+            
+        } catch (SQLException e) {
+            vLogger.error("Error getting the connection to the database for extracting the candidates"+e.getMessage());
+        }
+        return null;
+	}
+	
 }
