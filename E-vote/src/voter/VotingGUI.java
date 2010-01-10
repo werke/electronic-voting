@@ -253,8 +253,7 @@ public class VotingGUI extends javax.swing.JFrame {
             throws Exception
     {
         int i = jListCandidates.getSelectedIndex();
-        Candidate c = candidates.get(i);
-        return new Ballot(i, c.getCandidateName(), c.getOrganizationName());
+        return new Ballot(i);
     }
 
     private void readCandidatesFromDB() {
