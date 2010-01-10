@@ -177,7 +177,7 @@ public class VotingGUI extends javax.swing.JFrame {
             doVote();
             this.setVisible(false);
             this.dispose();
-            JOptionPane.showMessageDialog(rootPane, "Vote Successful", "Message", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(rootPane, "Vote Successful", "Message", JOptionPane.INFORMATION_MESSAGE);
         } catch(Exception e) {
             JOptionPane.showMessageDialog(rootPane, e.getMessage(), "Eroare", JOptionPane.ERROR_MESSAGE);
         }
