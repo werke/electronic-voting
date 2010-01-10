@@ -60,6 +60,10 @@ public class ConnectionHandler implements Runnable{
 			
 			//we sign the message with validator private key
 			ObjectOutputStream oos1 = new ObjectOutputStream(socket.getOutputStream());
+			
+			setVoterNotEligible(voterRequest);
+			vLogger.info("Voter registered in database");
+			
 			oos1.writeObject(RSA_Blinder.sign(blindedMesage, rsapvK));
 			vLogger.info("Response with the blinded message signed was sent successfully");
 			
@@ -102,6 +106,19 @@ public class ConnectionHandler implements Runnable{
 			return false;
 		}
 	}
-	
+	private void setVoterNotEligible(Voter v){
+		DataBaseConector dbc = new DataBaseConector();
+		Connection conn =  dbc.getDatabaseConection("jdbc:mysql://localhost:3306/mysql", "root", "");
+		Statement stmt;
+		
+		try {
+			stmt = conn.createStatement();
+			String voterCNP = v.getCNP();
+			stmt.executeUpdate("UPDATE evote.eligible_voters SET VOTED=1 WHERE CNP='"+v.getCNP()+"'");
+			
+		} catch (SQLException e) {
+			vLogger.error("Error getting the connection to the database "+e.getMessage());
+		}
+	}
 	
 }
