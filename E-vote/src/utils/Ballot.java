@@ -1,43 +1,36 @@
 package utils;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
 import java.security.SecureRandom;
+import java.security.interfaces.RSAPrivateKey;
+import java.security.interfaces.RSAPublicKey;
+import ssl.RSA_Blinder;
 
-public class Ballot implements Serializable {
+public class Ballot {
 
     private final int       vote_option_id;
-    private final String    candidate;
-    private final String    organization;
-    private final byte []   randomBytes;
+    private final int       random;
 
-    public Ballot( int vote_option_id, String candidate, String organization ) throws Exception {
+    public Ballot( int vote_option_id ) throws Exception {
         SecureRandom random = SecureRandom.getInstance("SHA1PRNG","SUN");
-        this.randomBytes = new byte[16];
-        random.nextBytes(randomBytes);
         this.vote_option_id = vote_option_id;
-        this.candidate = candidate;
-        this.organization = organization;
+        this.random = random.nextInt();
+    }
+
+    private Ballot( int vote_option_id, int random ) {
+        this.vote_option_id = vote_option_id;
+        this.random = random;
     }
 
     public static Ballot fromByteArray(byte [] raw)
             throws ClassNotFoundException, IOException
     {
-        ByteArrayInputStream bais = new ByteArrayInputStream(raw);
-        ObjectInputStream ois = new ObjectInputStream(bais);
-        return (Ballot)ois.readObject();
-    }
-
-    public String getCandidate() {
-        return candidate;
-    }
-
-    public String getOrganization() {
-        return organization;
+        String str = new String(raw);
+        String [] parts = str.split(" ");
+        return new Ballot(Integer.parseInt(parts[0]), Integer.parseInt(parts[1]));
     }
 
     public int getVote_option_id() {
@@ -45,29 +38,11 @@ public class Ballot implements Serializable {
     }
 
     public byte [] getBytes() {
-        byte[] ret = null;
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();;
-        try {
-            ObjectOutputStream oos = new ObjectOutputStream(baos);
-            oos.writeObject(this);
-            oos.flush();
-            ret = baos.toByteArray();
-           
-        } catch (IOException e) {
-            throw new RuntimeException("Error serializing Ballot to byte array.", e);
-        }finally{
-        	 try {
-				baos.close();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-        }
-        return ret;
+        return ("" + vote_option_id + " " + random).getBytes();
     }
 
     @Override
     public String toString() {
-        return new String( vote_option_id + " " + candidate + " " + organization );
+        return new String( "" + vote_option_id );
     }
 }
