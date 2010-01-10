@@ -34,7 +34,7 @@ public class TallierServer {
         while (true){
             try{
                 Socket socket = server.accept();
-                pool.execute(new ConnectionHandler(socket));
+                pool.execute(new tallier.ConnectionHandler(socket));
             }catch (IOException exception){
                 vLogger.error("Error in accepting the connection : "+exception.getMessage());
             }

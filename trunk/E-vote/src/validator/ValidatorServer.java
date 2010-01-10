@@ -36,7 +36,7 @@ public class ValidatorServer {
         while (true){
             try{
                 Socket socket = server.accept();
-                pool.execute(new ConnectionHandler(socket , rsapvK));
+                pool.execute(new validator.ConnectionHandler(socket , rsapvK));
             }catch (IOException exception){
                 vLogger.error("Error in accepting the connection : "+exception.getMessage());
             }
