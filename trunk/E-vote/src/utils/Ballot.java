@@ -1,5 +1,10 @@
 package utils;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.security.SecureRandom;
 
@@ -29,5 +34,26 @@ public class Ballot implements Serializable {
 
     public int getVote_option_id() {
         return vote_option_id;
+    }
+    
+//    public Ballot(byte [] raw) {
+//        ByteArrayInputStream bais = new ByteArrayInputStream(raw);
+//        ObjectInputStream ois = new ObjectInputStream(bais);
+//
+//    }
+
+    public byte [] getBytes() {
+        byte[] ret = null;
+        try {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ObjectOutputStream oos = new ObjectOutputStream(baos);
+            oos.writeObject(this);
+            oos.flush();
+            ret = baos.toByteArray();
+            baos.close();
+        } catch (IOException e) {
+            throw new RuntimeException("Error serializing Ballot to byte array.", e);
+        }
+        return ret;
     }
 }
