@@ -4,6 +4,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.security.interfaces.RSAPrivateKey;
+import java.security.interfaces.RSAPublicKey;
 
 import org.apache.log4j.Logger;
 
@@ -15,9 +16,11 @@ public class ConnectionHandler implements Runnable {
 	
 	private Socket socket;
 	private Logger vLogger = Logger.getLogger("TallierLogger");
-
-	public ConnectionHandler(Socket socket){
+	private RSAPublicKey publicKey;
+	
+	public ConnectionHandler(Socket socket , RSAPublicKey key){
 		this.socket = socket;
+		this.publicKey = key;
 	}
 
 	@Override
@@ -29,46 +32,25 @@ public class ConnectionHandler implements Runnable {
 			byte[] vote = (byte[])ois.readObject();
 			vLogger.info("Am primit un vot");
 			
-			//unsign the message get
+			//unsign the message get			
+			byte[] unsignedMessage = RSA_Blinder.unsign(vote , publicKey);
+			
+			Ballot bVote = Ballot.fromByteArray(unsignedMessage);
+			System.out.println(bVote.toString());
 			
 			
-			Ballot bVote = Ballot.fromByteArray(vote);
-			
-			if 
 			//write the response for elligibility and send it
 			ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
-			oos.writeObject(ok);
-			vLogger.info("Response for elligibility sent " + ok);
-			
-			if (!ok){			
-				//close connection
-				ois.close();
-				oos.close();
-				socket.close();
-				return;
-			}
+			oos.writeObject(true);
+			vLogger.info("Response for elligibility sent " + true);
+	
 			oos.flush();
-
-			//reads the blinded message
-			ObjectInputStream ois1 = new ObjectInputStream(socket.getInputStream());
-			byte[] blindedMesage = (byte[])ois1.readObject();
-			vLogger.info("Am primit mesajul blinded "+blindedMesage.toString());
-			
-			//we sign the message with validator private key
-			ObjectOutputStream oos1 = new ObjectOutputStream(socket.getOutputStream());
-			oos1.writeObject(RSA_Blinder.sign(blindedMesage, rsapvK));
-			vLogger.info("Response with the blinded message signed was sent successfully");
-			
-			
 			
 			
 			//close connection
 			ois.close();
-			ois1.close();
 			oos.close();
-			oos1.close();
 			socket.close();
-			*/
 			
 		}catch (Exception exception){
 			vLogger.error("Error managing a client request :" + exception.getMessage());

@@ -35,7 +35,7 @@ public class ConnectionHandler implements Runnable{
 			//read the request for elligibility
 			ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
 			Voter voterRequest = (Voter)ois.readObject();
-			vLogger.info("Am primit cerere de vot din partea persoanei cu CNP "+voterRequest.getCNP());
+			vLogger.info("We got vote request from person identified by CNP "+voterRequest.getCNP());
 			
 			boolean ok = isEligibleToVote(voterRequest);
 			
@@ -56,7 +56,7 @@ public class ConnectionHandler implements Runnable{
 			//reads the blinded message
 			ObjectInputStream ois1 = new ObjectInputStream(socket.getInputStream());
 			byte[] blindedMesage = (byte[])ois1.readObject();
-			vLogger.info("Am primit mesajul blinded "+blindedMesage.toString());
+			vLogger.info("Received the following blinded message :  "+blindedMesage.toString());
 			
 			//we sign the message with validator private key
 			ObjectOutputStream oos1 = new ObjectOutputStream(socket.getOutputStream());

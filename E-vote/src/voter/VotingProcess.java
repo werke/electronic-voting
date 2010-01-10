@@ -19,8 +19,10 @@ import ssl.SSLManager;
 
 public class VotingProcess implements VotingProcessInterface {
 
-	private static final int PORT_NUMBER  = 3333;
-	private Socket socket;
+	private static final int VALIDATOR_PORT_NUMBER  = 3333;
+	private static final int TALLIER_PORT_NUMBER  = 3333;
+	private Socket validator_socket;
+	private Socket tallier_socket;
 	private Logger vLogger;
 	private boolean voterIsEligible;
 	private PublicKey pbK;
@@ -31,10 +33,11 @@ public class VotingProcess implements VotingProcessInterface {
 	{
 		try{
 			SSLManager sslManager = new SSLManager(ksPath, ksPass);
-            socket = sslManager.connectSocket("localhost", PORT_NUMBER);
+			validator_socket = sslManager.connectSocket("localhost", VALIDATOR_PORT_NUMBER);
+			tallier_socket = sslManager.connectSocket("localhost", TALLIER_PORT_NUMBER);
 			voterIsEligible = false;
 			vLogger =  Logger.getLogger("VotingLogger");			
-			X509Certificate[] serverCertificates =(X509Certificate[])(((SSLSocket)socket).getSession()).getPeerCertificates();
+			X509Certificate[] serverCertificates =(X509Certificate[])(((SSLSocket)validator_socket).getSession()).getPeerCertificates();
 			pbK = serverCertificates[0].getPublicKey();
 			
 			
@@ -50,11 +53,11 @@ public class VotingProcess implements VotingProcessInterface {
 		
 		try{
 			//send the request
-			ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
+			ObjectOutputStream oos = new ObjectOutputStream(validator_socket.getOutputStream());
 			oos.writeObject(v);
 			
 			//reads the response
-			ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
+			ObjectInputStream ois = new ObjectInputStream(validator_socket.getInputStream());
 			Boolean response = (Boolean)ois.readObject();
 			
 			voterIsEligible = response.booleanValue();
@@ -69,12 +72,12 @@ public class VotingProcess implements VotingProcessInterface {
 	
 	public byte[] sendBlindedMessage(byte[] message) {
 		try{
-			ObjectOutputStream oosbm = new ObjectOutputStream(socket.getOutputStream());
+			ObjectOutputStream oosbm = new ObjectOutputStream(validator_socket.getOutputStream());
 			oosbm.writeObject(message);
 			vLogger.info("Blinded nessage sent for verification and for signing");
 			
 			//reads the response
-			ObjectInputStream oisbm = new ObjectInputStream(socket.getInputStream());
+			ObjectInputStream oisbm = new ObjectInputStream(validator_socket.getInputStream());
 			byte[] response = (byte[])oisbm.readObject();
 			vLogger.info("Blinded mesage signed received succsesfully");
 			this.setBlindedSignedMessage(response);
@@ -82,7 +85,7 @@ public class VotingProcess implements VotingProcessInterface {
 			oosbm.flush();
 			
 			//closing connection
-			socket.close();
+			validator_socket.close();
 			
 			return response;
 			
@@ -96,12 +99,12 @@ public class VotingProcess implements VotingProcessInterface {
 	public void sendSignedMessageForTallier (byte[] message)
 	{
 		try{
-			ObjectOutputStream oosbm = new ObjectOutputStream(socket.getOutputStream());
+			ObjectOutputStream oosbm = new ObjectOutputStream(tallier_socket.getOutputStream());
 			oosbm.writeObject(message);
 			vLogger.info("Signed nessage sent to tallier for validation and registration");
 			
 			//reads the response
-			ObjectInputStream oisbm = new ObjectInputStream(socket.getInputStream());
+			ObjectInputStream oisbm = new ObjectInputStream(tallier_socket.getInputStream());
 			Boolean response = (Boolean)oisbm.readObject();
 			
 			if (response.booleanValue())
@@ -112,7 +115,7 @@ public class VotingProcess implements VotingProcessInterface {
 			oosbm.flush();
 			
 			//closing connection
-			socket.close();
+			tallier_socket.close();
 			
 			
 		}catch(IOException exception){
