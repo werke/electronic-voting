@@ -1,4 +1,4 @@
-package validator;
+package tallier;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -7,41 +7,37 @@ import java.security.interfaces.RSAPrivateKey;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import org.apache.log4j.Logger;
-
 import ssl.SSLManager;
+import validator.ConnectionHandler;
 
+public class TallierServer {
 
-public class ValidatorServer {
-	
-    private final static int PORT_NUMBER = 3333;
+	private final static int PORT_NUMBER = 5555;
     private ServerSocket server;
-    private Logger vLogger = Logger.getLogger("ValidatorLogger");
-    private RSAPrivateKey rsapvK;
+    private Logger vLogger = Logger.getLogger("TallierLogger");
+   // private RSAPrivateKey rsapvK;
 
-    public ValidatorServer(){
+    public TallierServer(){
         try{
-            SSLManager sslManager = new SSLManager("security/Validator/Validator.ks", "validator_password".toCharArray());
+            SSLManager sslManager = new SSLManager("security/Tallier/Tallier.ks", "tallier_password".toCharArray());
             server = sslManager.initServerSocket(PORT_NUMBER);
-            rsapvK = (RSAPrivateKey) sslManager.getKeyStore().getKey("validator_private", "validator_password".toCharArray());
+           // rsapvK = (RSAPrivateKey) sslManager.getKeyStore().getKey("tallier_private", "tallier_password".toCharArray());
         }catch(IOException exception){
-            vLogger.error("Error initializing the validator : "+ exception.getMessage());
+            vLogger.error("Error initializing the tallier : "+ exception.getMessage());
         }catch(Exception e){
             vLogger.error("SSL manager error : "+ e.getMessage());
         }
     }
-	
     public void handleIncomingConnections(){
-        vLogger.info("Validator Server started . Waiting for incoming connections...");
+        vLogger.info("Tallier Server started . Waiting for incoming connections...");
         ExecutorService pool = Executors.newFixedThreadPool(32);
         while (true){
             try{
                 Socket socket = server.accept();
-                pool.execute(new ConnectionHandler(socket , rsapvK));
+                pool.execute(new ConnectionHandler(socket));
             }catch (IOException exception){
                 vLogger.error("Error in accepting the connection : "+exception.getMessage());
             }
         }
     }
 }
-
-	

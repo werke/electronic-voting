@@ -24,7 +24,7 @@ public class VotingProcess implements VotingProcessInterface {
 	private Logger vLogger;
 	private boolean voterIsEligible;
 	private PublicKey pbK;
-	byte[] blindedSignedMessage;
+	private byte[] blindedSignedMessage;
 	
 	
 	public VotingProcess(String ksPath, char [] ksPass)
@@ -77,7 +77,7 @@ public class VotingProcess implements VotingProcessInterface {
 			ObjectInputStream oisbm = new ObjectInputStream(socket.getInputStream());
 			byte[] response = (byte[])oisbm.readObject();
 			vLogger.info("Blinded mesage signed received succsesfully");
-			blindedSignedMessage =response;
+			this.setBlindedSignedMessage(response);
 			
 			oosbm.flush();
 			
@@ -93,6 +93,34 @@ public class VotingProcess implements VotingProcessInterface {
 		}
 		return null;
 	}
+	public void sendSignedMessageForTallier (byte[] message)
+	{
+		try{
+			ObjectOutputStream oosbm = new ObjectOutputStream(socket.getOutputStream());
+			oosbm.writeObject(message);
+			vLogger.info("Signed nessage sent to tallier for validation and registration");
+			
+			//reads the response
+			ObjectInputStream oisbm = new ObjectInputStream(socket.getInputStream());
+			Boolean response = (Boolean)oisbm.readObject();
+			
+			if (response.booleanValue())
+				vLogger.info("Vote successfully registered!");
+			else
+				vLogger.error("Vote could NOT be registered!");
+			
+			oosbm.flush();
+			
+			//closing connection
+			socket.close();
+			
+			
+		}catch(IOException exception){
+			vLogger.error("Error sending the signed message to tallier :" +exception.getMessage());
+		}catch (ClassNotFoundException exception) {
+			vLogger.error("Error sending the signed message to tallier :" + exception.getMessage());
+		}
+	}
 
 	public boolean voterIsEligible() {
 		return voterIsEligible;
@@ -100,6 +128,14 @@ public class VotingProcess implements VotingProcessInterface {
 
 	public PublicKey getPbK() {
 		return pbK;
+	}
+
+	public byte[] getBlindedSignedMessage() {
+		return blindedSignedMessage;
+	}
+
+	public void setBlindedSignedMessage(byte[] blindedSignedMessage) {
+		this.blindedSignedMessage = blindedSignedMessage;
 	}
 
 	
