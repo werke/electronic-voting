@@ -13,7 +13,7 @@ import java.sql.Statement;
 import org.apache.log4j.Logger;
 
 import ssl.RSA_Blinder;
-import voter.Voter;
+import utils.Voter;
 import database.*;
 
 
