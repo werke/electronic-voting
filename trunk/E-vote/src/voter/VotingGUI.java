@@ -202,11 +202,11 @@ public class VotingGUI extends javax.swing.JFrame {
             RSA_Blinder rsaBlinder = new RSA_Blinder((RSAPublicKey)vp.getPbK());
             vp.sendBlindedMessage(rsaBlinder.blind(raw));
 
-            rsaBlinder.unblind(vp.blindedSignedMessage);
-            System.out.println(rsaBlinder.unblind(vp.blindedSignedMessage));
-            System.out.println(Ballot.fromByteArray(RSA_Blinder.unsign(rsaBlinder.unblind(vp.blindedSignedMessage), (RSAPublicKey)vp.getPbK())));
+//            rsaBlinder.unblind(vp.blindedSignedMessage);
+//            System.out.println(rsaBlinder.unblind(vp.blindedSignedMessage));
+//            System.out.println(Ballot.fromByteArray(RSA_Blinder.unsign(rsaBlinder.unblind(vp.blindedSignedMessage), (RSAPublicKey)vp.getPbK())));
         }catch(Exception e){
-                vLogger.error("Error at RSA blinding "+e.getMessage());
+            vLogger.error("Error at RSA blinding "+e.getMessage());
         }
     }
 
@@ -242,7 +242,7 @@ public class VotingGUI extends javax.swing.JFrame {
     }
 
     private void readCandidatesFromDB() {DataBaseConector dbc = new DataBaseConector();
-        Connection conn =  dbc.getDatabaseConection("jdbc:mysql://localhost:3306/mysql", "root", "");
+        Connection conn =  dbc.getDatabaseConection("jdbc:mysql://192.168.1.100:3306/mysql", "root", "");
         Statement stmt;
         ResultSet rs;
         

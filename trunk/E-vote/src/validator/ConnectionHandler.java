@@ -86,7 +86,7 @@ public class ConnectionHandler implements Runnable{
 	
 	public boolean isEligibleToVote(Voter v){
 		DataBaseConector dbc = new DataBaseConector();
-		Connection conn =  dbc.getDatabaseConection("jdbc:mysql://localhost:3306/mysql", "root", "");
+		Connection conn =  dbc.getDatabaseConection("jdbc:mysql://192.168.1.100:3306/mysql", "root", "");
 		Statement stmt;
 		ResultSet rs;
 		try {
