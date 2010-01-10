@@ -4,6 +4,7 @@ import java.sql.ResultSet;
 import java.util.LinkedList;
 import java.util.List;
 import javax.swing.AbstractListModel;
+import javax.swing.SwingUtilities;
 import utils.MyLogger;
 import validator.ValidatorServer;
 
@@ -97,6 +98,12 @@ public class TallierGui extends javax.swing.JFrame {
     private void jButtonStartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonStartActionPerformed
         new Thread( tallier ).start();
         new Thread( validator ).start();
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                jButtonStart.setEnabled(false);
+                jButtonStop.setEnabled(true);
+            }
+        });
     }//GEN-LAST:event_jButtonStartActionPerformed
 
     private void jButtonStopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonStopActionPerformed
@@ -111,6 +118,11 @@ public class TallierGui extends javax.swing.JFrame {
 
             public Object getElementAt(int index) {
                 return results.get(index);
+            }
+        });
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                jButtonStop.setEnabled(false);
             }
         });
     }//GEN-LAST:event_jButtonStopActionPerformed
