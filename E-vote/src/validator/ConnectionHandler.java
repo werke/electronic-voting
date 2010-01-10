@@ -59,10 +59,9 @@ public class ConnectionHandler implements Runnable{
 			vLogger.info("Am primit mesajul blinded "+blindedMesage.toString());
 			
 			//we sign the message with validator private key
-			
 			ObjectOutputStream oos1 = new ObjectOutputStream(socket.getOutputStream());
 			oos1.writeObject(RSA_Blinder.sign(blindedMesage, rsapvK));
-			vLogger.info("Response with the blinded message signed was sent");
+			vLogger.info("Response with the blinded message signed was sent successfully");
 			
 			
 			
