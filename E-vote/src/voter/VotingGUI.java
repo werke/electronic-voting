@@ -16,14 +16,13 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-
+import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import org.apache.log4j.Logger;
-
 import database.DataBaseConector;
-
 import java.util.List;
 import ssl.RSA_Blinder;
+import utils.*;
 import utils.*;
 
 /**
@@ -251,22 +250,27 @@ public class VotingGUI extends javax.swing.JFrame {
 		Connection conn =  dbc.getDatabaseConection("jdbc:mysql://localhost:3306/mysql", "root", "");
 		Statement stmt;
 		ResultSet rs;
+		ArrayList<String> result = new ArrayList<String>();
 		try {
 			stmt = conn.createStatement();
-			rs = stmt.executeQuery("SELECT VOTE_OPTION_ID , CANDIDATE , ORGANIZATION FROM evote.voting_options where CNP='"+voterCNP+"'");
+			rs = stmt.executeQuery("SELECT VOTE_OPTION_ID , CANDIDATE , ORGANIZATION FROM evote.voting_options");
 			if (!rs.first()){
-				return new String[]{};
+				return null;
 			}
-			
+			ArrayList<Candidate> candidates = new ArrayList<Candidate>();
+			while (rs.next()) { 				
+				candidates.add(new Candidate(rs.getInt(1), rs.getString(2), rs.getString(3)));				
+			}
+			for(Candidate e : candidates)
+				result.add(e.toString());
+				
 			
 		} catch (SQLException e) {
 			vLogger.error("Error getting the connection to the database "+e.getMessage());
 			return null;
 		}
-    	
-    	
-    	
-    	return new String[] {};
+    	   	
+    	return null;
     }
 
     /**
