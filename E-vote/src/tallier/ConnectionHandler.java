@@ -51,6 +51,8 @@ public class ConnectionHandler implements Runnable {
 			registerVoteDatabase(getCandidate(Integer.parseInt(bVote.toString())));
 			vLogger.info("Vote registered in the database");
 			
+			writeRegisteredVotesToFile(getCandidate(Integer.parseInt(bVote.toString())));
+			vLogger.info("Vote registered in the file for future verifications");
 			
 			//write the response for vote confirmation
 			ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
@@ -107,6 +109,11 @@ public class ConnectionHandler implements Runnable {
         } catch (SQLException e) {
             vLogger.error("Error getting the connection to the database for inserting the vote"+e.getMessage());
         }
+	}
+	
+	private void writeRegisteredVotesToFile(Candidate c){
+		Logger voteLogger = Logger.getLogger("VoterLogger");
+		voteLogger.info("Vote registered for candidate "+ c.getCandidateName()+" from organization "+c.getOrganizationName());
 		
 		
 	}
