@@ -18,7 +18,7 @@ import ssl.RSA_Blinder;
 import ssl.SSLManager;
 import utils.Ballot;
 import utils.Candidate;
-import voter.Voter;
+import utils.Voter;
 
 public class ConnectionHandler implements Runnable {
 	

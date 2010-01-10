@@ -16,6 +16,7 @@ import org.apache.log4j.Logger;
 
 import ssl.RSA_Blinder;
 import ssl.SSLManager;
+import utils.Voter;
 
 public class VotingProcess implements VotingProcessInterface {
 
