@@ -20,7 +20,7 @@ import ssl.SSLManager;
 public class VotingProcess implements VotingProcessInterface {
 
 	private static final int VALIDATOR_PORT_NUMBER  = 3333;
-	private static final int TALLIER_PORT_NUMBER  = 3333;
+	private static final int TALLIER_PORT_NUMBER  = 5555;
 	private Socket validator_socket;
 	private Socket tallier_socket;
 	private Logger vLogger;
