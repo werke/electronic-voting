@@ -246,6 +246,8 @@ public class VotingGUI extends javax.swing.JFrame {
             throws Exception
     {
         int i = jListCandidates.getSelectedIndex();
+        if( i < 0 )
+            throw new Exception("Please select a candidate, or Romania will burn.");
         return new Ballot(i+1);
     }
 
