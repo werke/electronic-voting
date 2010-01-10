@@ -12,10 +12,16 @@
 package voter;
 
 import java.security.interfaces.RSAPublicKey;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 import javax.swing.JOptionPane;
 import ssl.*;
 import org.apache.log4j.Logger;
+
+import database.DataBaseConector;
 
 import ssl.RSA_Blinder;
 import utils.MyLogger;
@@ -208,13 +214,27 @@ public class VotingGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_jButtonVoteActionPerformed
 
     private String [] getCandidates() {
-        return new String[] {
-          "Candidatul 1, Partidul 1",
-          "Candidatul 1, Partidul 2",
-          "Candidatul 1, Partidul 3",
-          "Candidatul 1, Partidul 4",
-          "Candidatul 1, Partidul 5",
-        };
+        
+    	DataBaseConector dbc = new DataBaseConector();
+		Connection conn =  dbc.getDatabaseConection("jdbc:mysql://localhost:3306/mysql", "root", "");
+		Statement stmt;
+		ResultSet rs;
+		try {
+			stmt = conn.createStatement();
+			rs = stmt.executeQuery("SELECT VOTE_OPTION_ID , CANDIDATE , ORGANIZATION FROM evote.voting_options where CNP='"+voterCNP+"'");
+			if (!rs.first()){
+				return new String[]{};
+			}
+			
+			
+		} catch (SQLException e) {
+			vLogger.error("Error getting the connection to the database "+e.getMessage());
+			return null;
+		}
+    	
+    	
+    	
+    	return new String[] {};
     }
 
     /**
