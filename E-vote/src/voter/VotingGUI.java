@@ -1,9 +1,4 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/*
  * VotingProcessMain.java
  *
  * Created on Jan 9, 2010, 8:09:23 PM
@@ -192,27 +187,26 @@ public class VotingGUI extends javax.swing.JFrame {
     {
         Voter v = getVoter();
         VotingProcess vp = getVotingProcess();
-        Ballot b = getBallot();
+        Ballot ballot = getBallot();
         vp.sendRequestToVote(v);
         if (!vp.voterIsEligible()){
             String message = "Voter with CNP "+v.getCNP()+" is NOT eligible to vote. Possible fraud detected.";
             vLogger.fatal(message);
             throw new Exception(message);
         }
-        else{
-            String message = "Voter with CNP "+v.getCNP()+" is eligible to vote.";
-            vLogger.info(message);
-            byte[] raw  = "lalala".getBytes();
-                    try{
-                            RSA_Blinder rsaBlinder = new RSA_Blinder((RSAPublicKey)vp.getPbK());
-                            vp.sendBlindedMessage(rsaBlinder.blind(raw));
 
-                            rsaBlinder.unblind(vp.blindedSignedMessage);
-                            System.out.println(rsaBlinder.unblind(vp.blindedSignedMessage));
-                            System.out.println(new String(RSA_Blinder.unsign(rsaBlinder.unblind(vp.blindedSignedMessage), (RSAPublicKey)vp.getPbK())));
-                    }catch(Exception e){
-                            vLogger.error("Error at RSA blinding "+e.getMessage());
-                    }
+        String message = "Voter with CNP "+v.getCNP()+" is eligible to vote.";
+        vLogger.info(message);
+        byte[] raw  = ballot.getBytes();
+        try{
+            RSA_Blinder rsaBlinder = new RSA_Blinder((RSAPublicKey)vp.getPbK());
+            vp.sendBlindedMessage(rsaBlinder.blind(raw));
+
+            rsaBlinder.unblind(vp.blindedSignedMessage);
+            System.out.println(rsaBlinder.unblind(vp.blindedSignedMessage));
+            System.out.println(Ballot.fromByteArray(RSA_Blinder.unsign(rsaBlinder.unblind(vp.blindedSignedMessage), (RSAPublicKey)vp.getPbK())));
+        }catch(Exception e){
+                vLogger.error("Error at RSA blinding "+e.getMessage());
         }
     }
 
@@ -242,14 +236,12 @@ public class VotingGUI extends javax.swing.JFrame {
     private Ballot getBallot()
             throws Exception
     {
-//        int i = jListCandidates.getSelectedIndex();
-//        Candidate c =
-                return null;
+        int i = jListCandidates.getSelectedIndex();
+        Candidate c = candidates.get(i);
+        return new Ballot(i, c.getCandidateName(), c.getOrganizationName());
     }
 
-    private void readCandidatesFromDB() {
-
-    	DataBaseConector dbc = new DataBaseConector();
+    private void readCandidatesFromDB() {DataBaseConector dbc = new DataBaseConector();
         Connection conn =  dbc.getDatabaseConection("jdbc:mysql://localhost:3306/mysql", "root", "");
         Statement stmt;
         ResultSet rs;
@@ -268,12 +260,9 @@ public class VotingGUI extends javax.swing.JFrame {
     }
 
     private List<String> getCandidates() {
-        
-    	
         ArrayList<String> result = new ArrayList<String>();
         for(Candidate e : candidates)
             result.add(e.toString());
-
         return result;
     }
 
