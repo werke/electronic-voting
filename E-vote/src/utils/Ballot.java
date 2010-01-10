@@ -24,6 +24,14 @@ public class Ballot implements Serializable {
         this.organization = organization;
     }
 
+    public static Ballot fromByteArray(byte [] raw)
+            throws ClassNotFoundException, IOException
+    {
+        ByteArrayInputStream bais = new ByteArrayInputStream(raw);
+        ObjectInputStream ois = new ObjectInputStream(bais);
+        return (Ballot)ois.readObject();
+    }
+
     public String getCandidate() {
         return candidate;
     }
@@ -35,12 +43,6 @@ public class Ballot implements Serializable {
     public int getVote_option_id() {
         return vote_option_id;
     }
-    
-//    public Ballot(byte [] raw) {
-//        ByteArrayInputStream bais = new ByteArrayInputStream(raw);
-//        ObjectInputStream ois = new ObjectInputStream(bais);
-//
-//    }
 
     public byte [] getBytes() {
         byte[] ret = null;
