@@ -206,13 +206,14 @@ public class VotingGUI extends javax.swing.JFrame {
 
             if (vp.getBlindedSignedMessage() != null){
                 System.out.println(Ballot.fromByteArray(RSA_Blinder.unsign(rsaBlinder.unblind(vp.getBlindedSignedMessage()), (RSAPublicKey)vp.getPbK())));
+                vp.sendSignedMessageForTallier(rsaBlinder.unblind(vp.getBlindedSignedMessage()));
             }
             else{
-                vLogger.error("Error receiving the blinded signe message");
+                vLogger.error("Error receiving the blinded signed message");
                 return;
             }
             		
-//            rsaBlinder.unblind(vp.getBlindedSignedMessage());
+//           
         }catch(Exception e){
             vLogger.error("Error at RSA blinding "+e.getMessage());
         }

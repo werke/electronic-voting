@@ -8,6 +8,7 @@ import java.security.interfaces.RSAPrivateKey;
 import org.apache.log4j.Logger;
 
 import ssl.RSA_Blinder;
+import utils.Ballot;
 import voter.Voter;
 
 public class ConnectionHandler implements Runnable {
@@ -22,14 +23,18 @@ public class ConnectionHandler implements Runnable {
 	@Override
 	public void run() {
 
-		try{	/*		
-			//read the request for elligibility
+		try{			
+			//read the unblinded signed vote received from voter
 			ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
-			Voter voterRequest = (Voter)ois.readObject();
-			vLogger.info("Am primit cerere de vot din partea persoanei cu CNP "+voterRequest.getCNP());
+			byte[] vote = (byte[])ois.readObject();
+			vLogger.info("Am primit un vot");
 			
-			boolean ok = isEligibleToVote(voterRequest);
+			//unsign the message get
 			
+			
+			Ballot bVote = Ballot.fromByteArray(vote);
+			
+			if 
 			//write the response for elligibility and send it
 			ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
 			oos.writeObject(ok);
