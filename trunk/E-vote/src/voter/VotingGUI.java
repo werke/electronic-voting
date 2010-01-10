@@ -241,7 +241,8 @@ public class VotingGUI extends javax.swing.JFrame {
         return new Ballot(i, c.getCandidateName(), c.getOrganizationName());
     }
 
-    private void readCandidatesFromDB() {DataBaseConector dbc = new DataBaseConector();
+    private void readCandidatesFromDB() {
+        DataBaseConector dbc = new DataBaseConector();
         Connection conn =  dbc.getDatabaseConection("jdbc:mysql://192.168.1.100:3306/mysql", "root", "");
         Statement stmt;
         ResultSet rs;
