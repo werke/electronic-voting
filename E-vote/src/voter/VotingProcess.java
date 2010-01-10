@@ -35,7 +35,6 @@ public class VotingProcess {
 		try{
 			sslManager = new SSLManager(ksPath, ksPass);
 			validator_socket = sslManager.connectSocket("localhost", VALIDATOR_PORT_NUMBER);
-			//tallier_socket = sslManager.connectSocket("localhost", TALLIER_PORT_NUMBER);
 			voterIsEligible = false;
 			vLogger =  Logger.getLogger("VotingLogger");			
 			X509Certificate[] serverCertificates =(X509Certificate[])(((SSLSocket)validator_socket).getSession()).getPeerCertificates();
