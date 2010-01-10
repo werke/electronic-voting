@@ -16,6 +16,7 @@ public class TallierGui extends javax.swing.JFrame {
     public TallierGui() {
         MyLogger.initLogging("TallierLogger", "tallier.log");
         MyLogger.initLogging("ValidatorLogger", "validator.log");
+        MyLogger.initLogging("VoterLogger", "voterCountVerification.log");
         tallier = new TallierServer();
         validator = new ValidatorServer();
         initComponents();
