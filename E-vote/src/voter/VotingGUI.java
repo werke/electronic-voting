@@ -240,7 +240,7 @@ public class VotingGUI extends javax.swing.JFrame {
 
     private Ballot getBallot()
             throws Exception
-    {
+    {return null;
 
     }
 
@@ -263,14 +263,14 @@ public class VotingGUI extends javax.swing.JFrame {
 			}
 			for(Candidate e : candidates)
 				result.add(e.toString());
-				
+						
 			
 		} catch (SQLException e) {
 			vLogger.error("Error getting the connection to the database "+e.getMessage());
 			return null;
 		}
     	   	
-    	return null;
+    	return result;
     }
 
     /**
