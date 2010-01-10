@@ -46,15 +46,22 @@ public class Ballot implements Serializable {
 
     public byte [] getBytes() {
         byte[] ret = null;
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();;
         try {
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
             ObjectOutputStream oos = new ObjectOutputStream(baos);
             oos.writeObject(this);
             oos.flush();
             ret = baos.toByteArray();
-            baos.close();
+           
         } catch (IOException e) {
             throw new RuntimeException("Error serializing Ballot to byte array.", e);
+        }finally{
+        	 try {
+				baos.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
         }
         return ret;
     }

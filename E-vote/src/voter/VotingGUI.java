@@ -197,14 +197,20 @@ public class VotingGUI extends javax.swing.JFrame {
 
         String message = "Voter with CNP "+v.getCNP()+" is eligible to vote.";
         vLogger.info(message);
+        RSA_Blinder rsaBlinder = new RSA_Blinder((RSAPublicKey)vp.getPbK());
         byte[] raw  = ballot.getBytes();
+        byte[] blinded = rsaBlinder.blind(raw);
+        byte[] unblinded = rsaBlinder.unblind(blinded);
+        Ballot bb = Ballot.fromByteArray(unblinded);
+        System.out.println(bb);
+        
         try{
-            RSA_Blinder rsaBlinder = new RSA_Blinder((RSAPublicKey)vp.getPbK());
+            rsaBlinder = new RSA_Blinder((RSAPublicKey)vp.getPbK());
             vp.sendBlindedMessage(rsaBlinder.blind(raw));
 
-           rsaBlinder.unblind(vp.blindedSignedMessage);
-          System.out.println(rsaBlinder.unblind(vp.blindedSignedMessage));
-//            System.out.println(Ballot.fromByteArray(RSA_Blinder.unsign(rsaBlinder.unblind(vp.blindedSignedMessage), (RSAPublicKey)vp.getPbK())));
+            rsaBlinder.unblind(vp.blindedSignedMessage);
+            System.out.println(rsaBlinder.unblind(vp.blindedSignedMessage));
+            System.out.println(RSA_Blinder.unsign(rsaBlinder.unblind(vp.blindedSignedMessage), (RSAPublicKey)vp.getPbK()));
         }catch(Exception e){
             vLogger.error("Error at RSA blinding "+e.getMessage());
         }
