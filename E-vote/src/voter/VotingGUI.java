@@ -206,7 +206,7 @@ public class VotingGUI extends javax.swing.JFrame {
             vp.sendBlindedMessage(rsaBlinder.blind(raw));
 
             if (vp.getBlindedSignedMessage() != null){
-                System.out.println(Ballot.fromByteArray(RSA_Blinder.unsign(rsaBlinder.unblind(vp.getBlindedSignedMessage()), (RSAPublicKey)vp.getPbK())));
+                //System.out.println(Ballot.fromByteArray(RSA_Blinder.unsign(rsaBlinder.unblind(vp.getBlindedSignedMessage()), (RSAPublicKey)vp.getPbK())));
                 vp.sendSignedMessageForTallier(rsaBlinder.unblind(vp.getBlindedSignedMessage()));
             }
             else{
